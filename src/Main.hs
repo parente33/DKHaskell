@@ -1,12 +1,12 @@
 module Main where
 
 import LI12324
-import Tarefa1 
-import Tarefa2
-import Tarefa3
-import Tarefa4
-import Tarefa5
-import Graphics.Gloss.Interface.IO.Game
+import Tarefa1 () 
+import Tarefa2 ()
+import Tarefa3 ()
+import Tarefa4 ()
+import Tarefa5 
+import Graphics.Gloss.Interface.IO.Game ( playIO )
 import Graphics.Gloss
 
 main :: IO ()

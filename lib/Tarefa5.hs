@@ -14,7 +14,6 @@ import Tarefa4
 import GHC.Base (TrName(TrNameD))
 import GHC.Conc (ThreadStatus(ThreadRunning))
 
-
 --Recolhe a Picture que esta acossiada a uma imagem
 getImagem :: Imagem -> Imagens -> Picture
 getImagem k d = fromJust $ lookup k d
