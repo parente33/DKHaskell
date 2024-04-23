@@ -40,7 +40,7 @@ author:             Daniel Gonçalves Parente <a107363@alunos.uminho.pt>
 category:           Game
 
 -- Extra files to be distributed with the package, such as examples or a README.
-extra-source-files: CHANGELOG.md
+extra-source-files: CHANGELOG.md, parente33/Music/A Cerulean State - As we lose sight of the place we once longed for.mp3
 
 library
     -- Modules exported by the library.
@@ -87,6 +87,7 @@ executable primate-kong
         random ^>=1.2.1.1,
         gloss ^>=1.13.2.2,
         filepath ^>=1.4.2.2,
+        sdl2-mixer,
         primate-kong
 
     -- Directories containing source files.

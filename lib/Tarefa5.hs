@@ -122,7 +122,7 @@ imagemMario imgs e@Estado {jogo = jogo@(Jogo {jogador = mario}), acao = acaoAtua
                         then Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) imagemAndandoEsquerda
                         else Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) imagemParado
                   else
-                      if vx > 0
+                      if vx > 0 -- vx tem que ser 0 para jogador subir escada?
                         then
                             if trocaImagem == 0
                               then Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) imagemAndandoDireita
@@ -207,17 +207,14 @@ reage (EventKey (SpecialKey KeyDown) Down _ _) e@Estado {modo = MenuInicial Joga
   return e {modo = MenuInicial Sair}
 reage (EventKey (Char 's') Down _ _) e@Estado {modo = MenuInicial Jogar} =
   return e {modo = MenuInicial Sair}
-
 reage (EventKey (SpecialKey KeyUp) Down _ _) e@Estado {modo = MenuInicial Sair} =
   return e {modo = MenuInicial Jogar}
 reage (EventKey (Char 'w') Down _ _) e@Estado {modo = MenuInicial Sair} =
   return e {modo = MenuInicial Jogar}
-
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Jogar} =
   return e {modo = EmJogo}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Sair} =
   exitFailure
-
 reage (EventKey (SpecialKey KeyLeft) Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} =
   return $ atualizaestado (Just AndarEsquerda) e
 reage (EventKey (SpecialKey KeyLeft) Up _ _) e@Estado {modo= EmJogo,jogo = jogo1} = do
@@ -226,7 +223,6 @@ reage (EventKey (Char 'a') Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just AndarEsquerda) e
 reage (EventKey (Char 'a') Up _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Parar) e
-
 reage (EventKey (SpecialKey KeyRight) Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} =
   return $ atualizaestado (Just AndarDireita) e
 reage (EventKey (SpecialKey KeyRight) Up _ _) e@Estado {modo= EmJogo,jogo = jogo1} = do
@@ -235,10 +231,8 @@ reage (EventKey (Char 'd') Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just AndarDireita) e
 reage (EventKey (Char 'd') Up _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Parar) e
-
 reage (EventKey (SpecialKey KeySpace) Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} =
   return $ atualizaestado (Just Saltar) e
-
 reage (EventKey (SpecialKey KeyUp) Down _ _) e@Estado {modo= EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Subir) e
 reage (EventKey (SpecialKey KeyUp) Up _ _) e@Estado{modo= EmJogo,jogo = jogo1} = do
@@ -247,7 +241,6 @@ reage (EventKey (Char 'w') Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Subir) e
 reage (EventKey (Char 'w') Up _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Parar) e
-
 reage (EventKey (SpecialKey KeyDown) Down _ _) e@Estado {modo= EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Descer) e
 reage (EventKey (SpecialKey KeyDown) Up _ _) e@Estado {modo= EmJogo,jogo = jogo1} = do
@@ -256,25 +249,20 @@ reage (EventKey (Char 's') Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Descer) e
 reage (EventKey (Char 's') Up _ _) e@Estado {modo = EmJogo,jogo = jogo1} = do
   return $ atualizaestado (Just Parar) e
-
 reage (EventKey (SpecialKey KeyEsc) Down _ _) e@Estado {modo = EmJogo,jogo = jogo1} =
   return e {modo = MenuPausa Retornar}
-
 reage (EventKey (SpecialKey KeyDown) Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = MenuPausa Exit}
 reage (EventKey (Char 's') Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = MenuPausa Exit}
-
 reage (EventKey (SpecialKey KeyUp) Down _ _) e@Estado {modo = MenuPausa Exit} =
   return e {modo = MenuPausa Retornar}
 reage (EventKey (Char 'w') Down _ _) e@Estado {modo = MenuPausa Exit} =
   return e {modo = MenuPausa Retornar}
-
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Exit} =
   return reiniciarJogo $ e {modo = MenuInicial Jogar}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = EmJogo}
-
 reage _ e = return e
 
 janela :: Display
