@@ -1,33 +1,43 @@
 module Main where
 
 import LI12324
-import Tarefa1 () 
+import Tarefa1 ()
 import Tarefa2 ()
 import Tarefa3 ()
 import Tarefa4 ()
-import Tarefa5 
+import Tarefa5
 import Graphics.Gloss.Interface.IO.Game ( playIO )
 import Graphics.Gloss
 import SDL.Mixer
 import System.Environment (getEnv)
-import System.FilePath ((</>)) 
+import System.FilePath ((</>))
+import Control.Exception (bracket)
+import Control.Concurrent (threadDelay)
+import Control.Monad
 
 main :: IO ()
 main = do
     imgs <- carregarImagens
 
-    homeDir <- getEnv "HOME"
+    initialize [InitMP3]
 
-    let musicFilePath = homeDir </> "Music/aswelosesightoftheplaceweonceloungedfor.mp3"
+    openAudio defaultAudio 256
 
-    withAudio defaultAudio 256 $ do
+    musicFilePath <- load "Pou music ost - ConnectCliff JumpCliff DashJet Pou.mp3"
 
-        musica <- load musicFilePath
+    let musicPlaying = True
 
-        setMusicVolume 50
+    SDL.Mixer.play musicFilePath
 
-        playMusic Forever musica
-    
+    let loop = do
+          when musicPlaying $ do
+              threadDelay 1000000
+              loop
+
+    loop
+
+    closeAudio
+
     playIO
         janela
         corFundo
