@@ -13,6 +13,7 @@ module LI12324 where
 import System.Random (mkStdGen, randoms)
 import Graphics.Gloss
 import Graphics.Gloss.Interface.IO.Game
+import SDL.Mixer
 
 gravidade :: Velocidade
 gravidade = (0,10)

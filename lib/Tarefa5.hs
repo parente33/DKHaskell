@@ -1,6 +1,5 @@
 module Tarefa5 where
 
-
 import Data.Maybe (fromJust)
 import Graphics.Gloss
 import Graphics.Gloss.Data.Color
@@ -14,24 +13,25 @@ import Tarefa4
 import GHC.Base (TrName(TrNameD))
 import GHC.Conc (ThreadStatus(ThreadRunning))
 import System.FilePath ((</>))
+import SDL.Mixer
 
---Recolhe a Picture que esta acossiada a uma imagem
+--Recolhe a Picture que esta associada a uma imagem
 getImagem :: Imagem -> Imagens -> Picture
 getImagem k d = fromJust $ lookup k d
 
 desenha :: Estado -> Personagem -> Float -> IO Picture
-desenha e@Estado {modo = MenuInicial Jogar,imagens = imgs} _ _ = do
-  return $ Pictures [getImagem MenuBackgroundImage imgs,Translate 470 (-250) $ getImagem PlayButton2 imgs,Translate 470 (-400) $ getImagem Quit imgs]
-desenha e@Estado {modo = MenuInicial Sair,imagens = imgs} _  _ = do
-  return $ Pictures [getImagem MenuBackgroundImage imgs,Translate 470 (-250) $ getImagem PlayButton imgs,Translate 470 (-400) $ getImagem Quit2 imgs]
+desenha e@Estado {modo = MenuInicial Jogar, imagens = imgs} _ _ = do
+  return $ Pictures [getImagem MenuBackgroundImage imgs, Translate 470 (-250) $ getImagem PlayButton2 imgs, Translate 470 (-400) $ getImagem Quit imgs]
+desenha e@Estado {modo = MenuInicial Sair, imagens = imgs} _ _ = do
+  return $ Pictures [getImagem MenuBackgroundImage imgs, Translate 470 (-250) $ getImagem PlayButton imgs, Translate 470 (-400) $ getImagem Quit2 imgs]
 
-desenha e@Estado {modo = MenuPausa Retornar,imagens = imgs} _ _ = do
-  return $ Pictures [getImagem Menudepausa imgs,Translate 470 (-250) $ getImagem Retornarbutton imgs,Translate 470 (-400) $ getImagem Exitbutton2 imgs]
-desenha e@Estado {modo = MenuPausa Exit,imagens = imgs} _ _ = do
-  return $ Pictures [getImagem Menudepausa imgs, Translate 470 (-250) $ getImagem Retornarbutton2 imgs,Translate 470 (-400) $ getImagem Exitbutton imgs]
+desenha e@Estado {modo = MenuPausa Retornar, imagens = imgs} _ _ = do
+  return $ Pictures [getImagem Menudepausa imgs, Translate 470 (-250) $ getImagem Retornarbutton imgs, Translate 470 (-400) $ getImagem Exitbutton2 imgs]
+desenha e@Estado {modo = MenuPausa Exit, imagens = imgs} _ _ = do
+  return $ Pictures [getImagem Menudepausa imgs, Translate 470 (-250) $ getImagem Retornarbutton2 imgs, Translate 470 (-400) $ getImagem Exitbutton imgs]
 
 desenha e@Estado {modo = EmJogo, imagens = imgs, jogo = jogo, acao = acaoAtual} jogador t = do
-    let imagemJogador = imagemMario imgs e t
+    let imagemJogador = imagemMario imgs e t jogador
     return $ Pictures (getImagem GameBackgroundImage imgs : mapaImagem (colisaoComAlcapao jogo) imgs 1 ++ [atualizaEstadoJogador e] ++ posicaoEstrela imgs jogo ++ posicaoColecionaveis imgs jogo ++ desenhaVidas imgs jogo ++ desenhaPontuacao imgs e ++ posicaoFantasmas imgs jogo ++ [posicaoMacaco imgs donkeyKong] ++ [imagemJogador] ++ desenhaVitoriaOuDerrota imgs jogo)
 
 desenhaVidas :: Imagens -> Jogo -> [Picture]
@@ -69,8 +69,8 @@ posicaoColecionaveis' imgs ((c,(x,y)):xs)
            | c == Martelo = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MarteloBMP imgs) : posicaoColecionaveis' imgs xs
            | otherwise = []
 
-imagemMario :: Imagens -> Estado -> Float -> Picture
-imagemMario imgs e@Estado {jogo = jogo@(Jogo {jogador = mario}), acao = acaoAtual} t =
+imagemMario :: Imagens -> Estado -> Float -> Personagem -> Picture
+imagemMario imgs e@Estado {jogo = jogo@(Jogo {jogador = mario}), acao = acaoAtual} t _ =
     let (x, y) = posicao mario
         (vx,vy) = velocidade mario
         z = direcao mario
@@ -211,7 +211,8 @@ reage (EventKey (SpecialKey KeyUp) Down _ _) e@Estado {modo = MenuInicial Sair} 
   return e {modo = MenuInicial Jogar}
 reage (EventKey (Char 'w') Down _ _) e@Estado {modo = MenuInicial Sair} =
   return e {modo = MenuInicial Jogar}
-reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Jogar} =
+reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Jogar} = do
+  pararMusicaAtual
   return e {modo = EmJogo}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Sair} =
   exitFailure
@@ -264,6 +265,9 @@ reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Exit}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = EmJogo}
 reage _ e = return e
+
+pararMusicaAtual :: IO ()
+pararMusicaAtual = SDL.Mixer.haltMusic
 
 janela :: Display
 janela = FullScreen
@@ -343,7 +347,7 @@ tempo dt estadoAtual@(Estado {modo = modoAtual, imagens = imgs})
           aplicaDanoFinal = if tempoMarteloAtualizado <= 0 then (False,0) else (aplicaDanoMartelo,tempoMarteloAtualizado)
 
       let jogadorAtualizadoComMartelo = jogadorAtualizado {aplicaDano = aplicaDanoFinal}
-          imagemJogadorAtualizada = imagemMario imgs estadoAtual dt
+          imagemJogadorAtualizada = imagemMario imgs estadoAtual dt jogadorAtualizadoComMartelo
 
       let jogoFinal = jogoMovimentado {jogador = jogadorAtualizadoComMartelo}
 

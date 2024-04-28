@@ -63,7 +63,8 @@ library
         base ^>=4.16.4.0,
         random ^>=1.2.1.1,
         gloss ^>=1.13.2.2,
-        filepath ^>=1.4.2.2
+        filepath ^>=1.4.2.2,
+        sdl2-mixer
 
     -- Directories containing source files.
     hs-source-dirs:   lib
@@ -88,6 +89,7 @@ executable primate-kong
         gloss ^>=1.13.2.2,
         filepath ^>=1.4.2.2,
         sdl2-mixer,
+        stm,
         primate-kong
 
     -- Directories containing source files.
