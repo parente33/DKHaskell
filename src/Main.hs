@@ -16,35 +16,36 @@ import Control.Concurrent (threadDelay,forkIO)
 import Control.Monad
 import Control.Concurrent.STM
 
-modoToMusic :: Modo -> FilePath
-modoToMusic (MenuInicial _) = "ost/Curse Of Aros - (COA) -Theme Song!.mp3"
-modoToMusic EmJogo = "ost/Pou music ost - ConnectCliff JumpCliff DashJet Pou.mp3"
-
-startMusicForMode :: Modo -> IO ()
-startMusicForMode mode = do
-    pararMusicaAtual
-    let musicPath = modoToMusic mode
-    musicFilePath <- load musicPath
-    _ <- forkIO $ SDL.Mixer.play musicFilePath
-    threadDelay 1
+playIfNotPlaying :: Maybe Music -> IO ()
+playIfNotPlaying (Just music) = do
+    closeAudio
+    playMusic Forever music
+playIfNotPlaying Nothing = return ()
 
 main :: IO ()
-main = do
+main = withAudio defaultAudio 256 $ do
     imgs <- carregarImagens
 
-    initialize [InitMP3]
-    openAudio defaultAudio 256
+    curseOfArosMusic <- load "ost/Curse Of Aros - (COA) -Theme Song!.mp3" :: IO Music
+    pouMusic <- load "ost/Pou music ost - ConnectCliff JumpCliff DashJet Pou.mp3" :: IO Music
 
     let initialMode = MenuInicial Jogar
-    startMusicForMode initialMode
+        estadoInicial = Estado 
+          { imagens = imgs,
+            modo = initialMode,
+            acao = Parar,
+            jogo = jogo1,
+            musicaMenu = Just curseOfArosMusic,
+            musicaJogo = Nothing
+          }
+
+    playMusic Forever curseOfArosMusic
 
     playIO
         janela
         corFundo
         frameRate
-        (Estado {imagens = imgs, modo = initialMode, acao = Parar, jogo = jogo1})
+        estadoInicial
         (\estado -> desenha estado (jogador (jogo estado)) 0)
         reage
         tempo
-
-    closeAudio

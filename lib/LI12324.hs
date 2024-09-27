@@ -69,7 +69,9 @@ data Estado = Estado
   { jogo :: Jogo,
     imagens :: Imagens,
     modo :: Modo,
-    acao :: Acao}
+    acao :: Acao,
+    musicaMenu :: Maybe Music,
+    musicaJogo :: Maybe Music}
 
 data MenuInicialOpcoes = Jogar | Sair deriving (Show, Eq)
 data MenuPausaOpcoes = Retornar | Exit deriving (Show,Eq) 
@@ -85,6 +87,8 @@ data Imagem = MenuBackgroundImage | GameBackgroundImage | PlayButton | PlayButto
 
 data BackgroundImage = MenuBackground | GameBackground
     deriving (Show, Eq)
+
+data BackgroundMusic = MenuBackgroundMusic | GameBackgroundMusic deriving (Eq, Show)
 
 
 jogo1 :: Jogo

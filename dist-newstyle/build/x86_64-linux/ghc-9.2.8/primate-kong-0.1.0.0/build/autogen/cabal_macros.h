@@ -50,6 +50,16 @@
   (major1) == 1 && (major2) <  2 || \
   (major1) == 1 && (major2) == 2 && (minor) <= 1)
 #endif /* MIN_VERSION_random */
+/* package sdl2-2.5.5.0 */
+#ifndef VERSION_sdl2
+#define VERSION_sdl2 "2.5.5.0"
+#endif /* VERSION_sdl2 */
+#ifndef MIN_VERSION_sdl2
+#define MIN_VERSION_sdl2(major1,major2,minor) (\
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  5 || \
+  (major1) == 2 && (major2) == 5 && (minor) <= 5)
+#endif /* MIN_VERSION_sdl2 */
 /* package sdl2-mixer-1.2.0.0 */
 #ifndef VERSION_sdl2_mixer
 #define VERSION_sdl2_mixer "1.2.0.0"
