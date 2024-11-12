@@ -20,20 +20,20 @@ getImagem :: Imagem -> Imagens -> Picture
 getImagem k d = fromJust $ lookup k d
 
 desenha :: Estado -> Personagem -> Float -> IO Picture
-desenha e@Estado {modo = MenuInicial Jogar, imagens = imgs, musicaMenu = Just _, musicaJogo = Nothing} _ _ = do
+desenha e@Estado {modo = MenuInicial Jogar, imagens = imgs} _ _ = do
   return $ Pictures [getImagem MenuBackgroundImage imgs, Translate 470 (-250) $ getImagem PlayButton2 imgs, Translate 470 (-400) $ getImagem Quit imgs]
-desenha e@Estado {modo = MenuInicial Sair, imagens = imgs, musicaMenu = Just _, musicaJogo = Nothing} _ _ = do
+desenha e@Estado {modo = MenuInicial Sair, imagens = imgs} _ _ = do
   return $ Pictures [getImagem MenuBackgroundImage imgs, Translate 470 (-250) $ getImagem PlayButton imgs, Translate 470 (-400) $ getImagem Quit2 imgs]
 
-desenha e@Estado {modo = MenuPausa Retornar, imagens = imgs, musicaMenu = Just _, musicaJogo = Nothing} _ _ = do
+desenha e@Estado {modo = MenuPausa Retornar, imagens = imgs} _ _ = do
   return $ Pictures [getImagem Menudepausa imgs, Translate 470 (-250) $ getImagem Retornarbutton imgs, Translate 470 (-400) $ getImagem Exitbutton2 imgs]
-desenha e@Estado {modo = MenuPausa Exit, imagens = imgs, musicaMenu = Just _, musicaJogo = Nothing} _ _ = do
+desenha e@Estado {modo = MenuPausa Exit, imagens = imgs} _ _ = do
   return $ Pictures [getImagem Menudepausa imgs, Translate 470 (-250) $ getImagem Retornarbutton2 imgs, Translate 470 (-400) $ getImagem Exitbutton imgs]
 
-desenha e@Estado {modo = EmJogo, imagens = imgs, jogo = jogo, acao = acaoAtual, musicaMenu = Just _, musicaJogo = Nothing} jogador t = do
+desenha e@Estado {modo = EmJogo, imagens = imgs, jogo = jogo, acao = acaoAtual} jogador t = do
     let imagemJogador = imagemMario imgs e t jogador
     return $ Pictures (getImagem GameBackgroundImage imgs : mapaImagem (colisaoComAlcapao jogo) imgs 1 
-        -- ++ [atualizaEstadoJogador e] 
+        ++ [atualizaEstadoJogador e] 
         ++ posicaoEstrela imgs jogo 
         ++ posicaoColecionaveis imgs jogo 
         ++ desenhaVidas imgs jogo 
@@ -42,7 +42,6 @@ desenha e@Estado {modo = EmJogo, imagens = imgs, jogo = jogo, acao = acaoAtual, 
         ++ [posicaoMacaco imgs donkeyKong] 
         ++ [imagemJogador] 
         ++ desenhaVitoriaOuDerrota imgs jogo)
-desenha _ _ _ = return $ Color red $ Circle 100
 
 
 desenhaVidas :: Imagens -> Jogo -> [Picture]
@@ -295,90 +294,66 @@ corFundo = greyN 0.0
 frameRate :: Int
 frameRate = 500
 
-atualizaEstado :: Float -> Estado -> IO Estado
-atualizaEstado dt e@Estado {modo = MenuInicial _, musicaMenu = Just menuMusic, musicaJogo = Nothing} = do
-  if modo e == MenuInicial Jogar then do
-    pararMusicaAtual
-    pouMusic <- carregaMusicaJogo
-    playMusic Forever pouMusic
-    let jogoAtualizado = atualizaPosicaoMario dt (jogo e)
-    return e {jogo = jogoAtualizado, musicaMenu = Nothing, musicaJogo = Just pouMusic}
-  else do
-    let jogoAtualizado = atualizaPosicaoMario dt (jogo e)
-    return e {jogo = jogoAtualizado}
-
-atualizaEstado dt e@Estado {modo = EmJogo, musicaMenu = Nothing, musicaJogo = Just jogoMusic} = do
-  if modo e == MenuInicial Jogar || modo e == MenuPausa Retornar then do
-    pararMusicaAtual
-    curseOfArosMusic <- carregaMusicaMenu
-    playMusic Forever curseOfArosMusic
-    let jogoAtualizado = atualizaPosicaoMario dt (jogo e)
-    return e {jogo = jogoAtualizado, musicaMenu = Just curseOfArosMusic, musicaJogo = Nothing}
-  else do
-    let jogoAtualizado = atualizaPosicaoMario dt (jogo e)
-    return e {jogo = jogoAtualizado}
-
-atualizaEstado dt e = do
+atualizaEstado :: Float -> Estado -> Estado
+atualizaEstado dt e =
   let jogoAtualizado = atualizaPosicaoMario dt (jogo e)
-  return e {jogo = jogoAtualizado}
-  
+  in e {jogo = jogoAtualizado}
 
---atualizaEstadoJogador :: Estado -> Picture
---atualizaEstadoJogador estado = let  jogoAtualizado = atualizaEstado 2024 estado
---                                    jogadorAtualizado = jogador (jogo jogoAtualizado)
---
---                                    txtVel = "Velocidade = " ++ show (velocidade jogadorAtualizado)
---                                    imgVel = translate 370 450 $ scale 0.2 0.2 $ color black $ text txtVel
---                                    imgVelBold = translate 369 449 $ scale 0.2 0.2 $ color black $ text txtVel
---
---                                    txtTipo = "Tipo = " ++ show (tipo jogadorAtualizado)
---                                    imgTipo = translate 370 425 $ scale 0.2 0.2 $ color black $ text txtTipo
---                                    imgTipoBold = translate 369 424 $ scale 0.2 0.2 $ color black $ text txtTipo
---
---                                    txtPos = "Posicao = " ++ show (posicao jogadorAtualizado)
---                                    imgPos = translate 370 405 $ scale 0.2 0.2 $ color black $ text txtPos
---                                    imgPosBold = translate 369 404 $ scale 0.2 0.2 $ color black $ text txtPos
---
---                                    txtDir = "Direcao = " ++ show (direcao jogadorAtualizado)
---                                    imgDir = translate 370 385 $ scale 0.2 0.2 $ color black $ text txtDir
---                                    imgDirBold = translate 369 384 $ scale 0.2 0.2 $ color black $ text txtDir
---
---                                    txtTam = "Tamanho = " ++ show (tamanho jogadorAtualizado)
---                                    imgTam = translate 370 365 $ scale 0.2 0.2 $ color black $ text txtTam
---                                    imgTamBold = translate 369 364 $ scale 0.2 0.2 $ color black $ text txtTam
---
---                                    txtEsc = "EmEscada = " ++ show (emEscada jogadorAtualizado)
---                                    imgEsc = translate 370 345 $ scale 0.2 0.2 $ color black $ text txtEsc
---                                    imgEscBold = translate 369 344 $ scale 0.2 0.2 $ color black $ text txtEsc
---
---                                    txtRes = "Ressalta = " ++ show (ressalta jogadorAtualizado)
---                                    imgRes = translate 370 325 $ scale 0.2 0.2 $ color black $ text txtRes
---                                    imgResBold = translate 369 324 $ scale 0.2 0.2 $ color black $ text txtRes
---
---                                    txtVida = "Vida = " ++ show (vida jogadorAtualizado)
---                                    imgVida = translate 370 305 $ scale 0.2 0.2 $ color black $ text txtVida
---                                    imgVidaBold = translate 369 304 $ scale 0.2 0.2 $ color black $ text txtVida
---
---                                    txtPont = "Pontuacao = " ++ show (pontuacao jogadorAtualizado)
---                                    imgPont = translate 370 285 $ scale 0.2 0.2 $ color black $ text txtPont
---                                    imgPontBold = translate 369 284 $ scale 0.2 0.2 $ color black $ text txtPont
---
---                                    txtDano = "AplicaDano = " ++ show (aplicaDano jogadorAtualizado)
---                                    imgDano = translate 370 265 $ scale 0.2 0.2 $ color black $ text txtDano
---                                    imgDanoBold = translate 369 264 $ scale 0.2 0.2 $ color black $ text txtDano
---
---                                 in pictures [imgVel,imgVelBold,imgTipo,imgTipoBold,imgPos,imgPosBold,imgDir,imgDirBold,imgTam,imgTamBold,imgEsc,imgEscBold,
---                                  imgRes,imgResBold,imgVida,imgVidaBold,imgPont,imgPontBold,imgDano,imgDanoBold]
+atualizaEstadoJogador :: Estado -> Picture
+atualizaEstadoJogador estado = let  jogoAtualizado = atualizaEstado 2024 estado
+                                    jogadorAtualizado = jogador (jogo jogoAtualizado)
+
+                                    txtVel = "Velocidade = " ++ show (velocidade jogadorAtualizado)
+                                    imgVel = translate 370 450 $ scale 0.2 0.2 $ color black $ text txtVel
+                                    imgVelBold = translate 369 449 $ scale 0.2 0.2 $ color black $ text txtVel
+
+                                    txtTipo = "Tipo = " ++ show (tipo jogadorAtualizado)
+                                    imgTipo = translate 370 425 $ scale 0.2 0.2 $ color black $ text txtTipo
+                                    imgTipoBold = translate 369 424 $ scale 0.2 0.2 $ color black $ text txtTipo
+
+                                    txtPos = "Posicao = " ++ show (posicao jogadorAtualizado)
+                                    imgPos = translate 370 405 $ scale 0.2 0.2 $ color black $ text txtPos
+                                    imgPosBold = translate 369 404 $ scale 0.2 0.2 $ color black $ text txtPos
+
+                                    txtDir = "Direcao = " ++ show (direcao jogadorAtualizado)
+                                    imgDir = translate 370 385 $ scale 0.2 0.2 $ color black $ text txtDir
+                                    imgDirBold = translate 369 384 $ scale 0.2 0.2 $ color black $ text txtDir
+
+                                    txtTam = "Tamanho = " ++ show (tamanho jogadorAtualizado)
+                                    imgTam = translate 370 365 $ scale 0.2 0.2 $ color black $ text txtTam
+                                    imgTamBold = translate 369 364 $ scale 0.2 0.2 $ color black $ text txtTam
+
+                                    txtEsc = "EmEscada = " ++ show (emEscada jogadorAtualizado)
+                                    imgEsc = translate 370 345 $ scale 0.2 0.2 $ color black $ text txtEsc
+                                    imgEscBold = translate 369 344 $ scale 0.2 0.2 $ color black $ text txtEsc
+
+                                    txtRes = "Ressalta = " ++ show (ressalta jogadorAtualizado)
+                                    imgRes = translate 370 325 $ scale 0.2 0.2 $ color black $ text txtRes
+                                    imgResBold = translate 369 324 $ scale 0.2 0.2 $ color black $ text txtRes
+
+                                    txtVida = "Vida = " ++ show (vida jogadorAtualizado)
+                                    imgVida = translate 370 305 $ scale 0.2 0.2 $ color black $ text txtVida
+                                    imgVidaBold = translate 369 304 $ scale 0.2 0.2 $ color black $ text txtVida
+
+                                    txtPont = "Pontuacao = " ++ show (pontuacao jogadorAtualizado)
+                                    imgPont = translate 370 285 $ scale 0.2 0.2 $ color black $ text txtPont
+                                    imgPontBold = translate 369 284 $ scale 0.2 0.2 $ color black $ text txtPont
+
+                                    txtDano = "AplicaDano = " ++ show (aplicaDano jogadorAtualizado)
+                                    imgDano = translate 370 265 $ scale 0.2 0.2 $ color black $ text txtDano
+                                    imgDanoBold = translate 369 264 $ scale 0.2 0.2 $ color black $ text txtDano
+
+                                in pictures [imgVel,imgVelBold,imgTipo,imgTipoBold,imgPos,imgPosBold,imgDir,imgDirBold,imgTam,imgTamBold,imgEsc,imgEscBold,
+                                 imgRes,imgResBold,imgVida,imgVidaBold,imgPont,imgPontBold,imgDano,imgDanoBold]
 
 tempo :: Float -> Estado -> IO Estado
-tempo dt estadoAtual@(Estado {modo = modoAtual, imagens = imgs}) 
+tempo dt estadoAtual@(Estado {modo = modoAtual, imagens = imgs})
   | modoAtual /= EmJogo = return estadoAtual
   | otherwise = do
       putStrLn $ "Before Update: " ++ show (posicao (jogador (jogo estadoAtual)))
 
-      estadoAtualizado <- atualizaEstado dt estadoAtual  -- Atualiza o estado e extrai o estado atualizado
-
-      let jogoMovimentado = movimenta 2024 (realToFrac dt) (jogo estadoAtualizado)
+      let estadoAtualizado = atualizaEstado dt estadoAtual
+          jogoMovimentado = movimenta 2024 (realToFrac dt) (jogo estadoAtualizado)
           jogadorAtualizado = jogador jogoMovimentado
           (aplicaDanoMartelo,tempoMartelo) = aplicaDano jogadorAtualizado
 
@@ -388,30 +363,22 @@ tempo dt estadoAtual@(Estado {modo = modoAtual, imagens = imgs})
           aplicaDanoFinal = if tempoMarteloAtualizado <= 0 then (False,0) else (aplicaDanoMartelo,tempoMarteloAtualizado)
 
       let jogadorAtualizadoComMartelo = jogadorAtualizado {aplicaDano = aplicaDanoFinal}
-          imagemJogadorAtualizada = imagemMario imgs estadoAtual dt jogadorAtualizadoComMartelo
+          imagemJogadorAtualizada = imagemMario imgs estadoAtual dt
 
       let jogoFinal = jogoMovimentado {jogador = jogadorAtualizadoComMartelo}
 
-      -- Aqui não precisamos desenhar, apenas atualizar o estado
-      -- estadoDesenhado <- desenha estadoAtualizado jogadorAtualizadoComMartelo (realToFrac dt)
+      estadoDesenhado <- desenha estadoAtualizado jogadorAtualizadoComMartelo (realToFrac dt)
 
       return estadoAtualizado {jogo = jogoFinal}
-
-
 
 reiniciarJogo :: IO Estado
 reiniciarJogo = do
     imgs <- carregarImagens
-    curseOfArosMusic <- load "ost/Curse Of Aros - (COA) -Theme Song!.mp3" :: IO Music
-    --pouMusic <- load "ost/Pou music ost - ConnectCliff JumpCliff DashJet Pou.mp3" :: IO Music
-
     return Estado {
         jogo = jogo1,
         imagens = imgs,
         modo = MenuInicial Jogar,
-        acao = Parar,
-        musicaMenu = Just curseOfArosMusic,
-        musicaJogo = Nothing}
+        acao = Parar}
 
 --Carrega todos os BMP
 carregarImagens :: IO Imagens

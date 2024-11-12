@@ -69,9 +69,7 @@ data Estado = Estado
   { jogo :: Jogo,
     imagens :: Imagens,
     modo :: Modo,
-    acao :: Acao,
-    musicaMenu :: Maybe Music,
-    musicaJogo :: Maybe Music}
+    acao :: Acao}
 
 data MenuInicialOpcoes = Jogar | Sair deriving (Show, Eq)
 data MenuPausaOpcoes = Retornar | Exit deriving (Show,Eq) 
@@ -87,9 +85,6 @@ data Imagem = MenuBackgroundImage | GameBackgroundImage | PlayButton | PlayButto
 
 data BackgroundImage = MenuBackground | GameBackground
     deriving (Show, Eq)
-
-data BackgroundMusic = MenuBackgroundMusic | GameBackgroundMusic deriving (Eq, Show)
-
 
 jogo1 :: Jogo
 jogo1 = Jogo mapaJogo listaInimigos listaColecionaveis mario
