@@ -80,7 +80,7 @@ data Imagem = MenuBackgroundImage | GameBackgroundImage | PlayButton | PlayButto
   | EstrelaBMP | MarteloBMP | Mariohammer2 | Mariohammer2direita | Mariodead | Marioescada | Marioescadadireita | Mariohammerunning | Mariohammerrunningdireita
   | Mariohammer | Mariohammerdireita | Mariojumping | Mariojumpingdireita | Mariorunning | Mariorunningdireita | Mario | Mariodireita | Macaco
   | PlataformaBMP | Princesa | EmptyBMP | MoedaBMP | FantasmaBMP | FantasmaDireitaBMP | Derrota | Vitoria | Exitbutton | Retornarbutton | Menudepausa 
-  | Retornarbutton2 | Exitbutton2
+  | Retornarbutton2 | Exitbutton2 | MedicKit
     deriving (Show, Eq)
 
 data BackgroundImage = MenuBackground | GameBackground

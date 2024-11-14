@@ -77,6 +77,7 @@ posicaoColecionaveis' _ [] = []
 posicaoColecionaveis' imgs ((c,(x,y)):xs)
            | c == Moeda = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MoedaBMP imgs) : posicaoColecionaveis' imgs xs
            | c == Martelo = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MarteloBMP imgs) : posicaoColecionaveis' imgs xs
+           | c == KitMedico = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MedicKit imgs) : posicaoColecionaveis' imgs xs
            | otherwise = []
 
 imagemMario :: Imagens -> Estado -> Float -> Personagem -> Picture
@@ -279,12 +280,6 @@ reage _ e = return e
 pararMusicaAtual :: IO ()
 pararMusicaAtual = SDL.Mixer.haltMusic
 
-carregaMusicaMenu :: IO Music
-carregaMusicaMenu = load "ost/Curse Of Aros - (COA) -Theme Song!.mp3" :: IO Music
-
-carregaMusicaJogo :: IO Music
-carregaMusicaJogo = load "ost/Pou music ost - ConnectCliff JumpCliff DashJet Pou.mp3" :: IO Music
-
 janela :: Display
 janela = FullScreen
 
@@ -424,6 +419,7 @@ carregarImagens = do
   exitButton <- loadBMP $ "assets" </> "exit_button.bmp"
   returnButton2 <- loadBMP $ "assets" </> "retornar_button2.bmp"
   exitButton2 <- loadBMP $ "assets" </> "exit_button2.bmp"
+  medickit <- loadBMP $ "assests" </> "medic_kit.bmp"
   let imgs = [(Derrota,derrota),(Vitoria,vitoria),(FantasmaDireitaBMP,fantasmaDireita),(FantasmaBMP,fantasma),(MoedaBMP,moeda),(EmptyBMP,empty),
               (Princesa,princesa),(PlataformaBMP,plataforma),(Macaco,macaco),(Mariodireita,mariodireita),(Mario,mario),(Mariorunningdireita,mariorunningdireita),
               (Mariorunning,mariorunning),(Mariojumpingdireita,mariojumpingdireita),(Mariojumping,mariojumping),(Mariohammerdireita,mariohammerdireita),
@@ -432,5 +428,5 @@ carregarImagens = do
               (Mariohammer2,mariohammerbonk),(MarteloBMP,hammer),(EstrelaBMP,estrela),(EscadasBMP,escadas),(Coracao,coracao),(Coracaopartido,coracaopartido),
               (AlcapaoBMP,alcapao),(PlayButton, playButton),(MenuBackgroundImage,menuBackground),(GameBackgroundImage,gameBackground),
               (PlayButton2,playButton2),(Quit,quitButton),(Quit2,quitButton2),(Exitbutton,exitButton),(Retornarbutton,returnButton),(Menudepausa,menuPausa),
-              (Retornarbutton2,returnButton2),(Exitbutton2,exitButton2)]
+              (Retornarbutton2,returnButton2),(Exitbutton2,exitButton2),(MedicKit,medickit)]
   return imgs
