@@ -17,8 +17,7 @@ import Control.Monad
 import Control.Concurrent.STM
 
 modoToMusic :: Modo -> FilePath
-modoToMusic (MenuInicial _) = "ost/Curse Of Aros - (COA) -Theme Song!.mp3"
-modoToMusic EmJogo = "ost/Pou music ost - ConnectCliff JumpCliff DashJet Pou.mp3"
+modoToMusic _ = "ost/Glorious Morning.mp3"
 
 startMusicForMode :: Modo -> IO ()
 startMusicForMode mode = do

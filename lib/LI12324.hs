@@ -95,7 +95,8 @@ mario = Personagem (0,0) Jogador (3.5,38.5) Oeste (1,1) False False 3 0 (False,0
 listaColecionaveis :: [(Colecionavel,Posicao)]
 listaColecionaveis = [(Moeda,(3.5,6.5)),(Moeda,(18.5,10.5)),(Moeda,(27.5,18.5)),(Moeda,(21.5,22.5)),
                         (Moeda,(7.5,30.5)),(Moeda,(27.5,34.5)),(Moeda,(6.5,38.5)),
-                        (Martelo,(23.5,34.5)),(Martelo,(13.5,10.5)),(Martelo,(3.5,18.5)),(Martelo,(7.5,26.5))]
+                        (Martelo,(23.5,34.5)),(Martelo,(13.5,10.5)),(Martelo,(3.5,18.5)),(Martelo,(7.5,26.5))
+                        ,(KitMedico,(10,38.5))]
 
 listaInimigos :: [Personagem]
 listaInimigos =  [Personagem (0,0) Fantasma (21.5,6.5) Este (1,1) False True 1 0 (False,0)

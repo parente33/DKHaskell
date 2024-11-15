@@ -223,7 +223,6 @@ reage (EventKey (SpecialKey KeyUp) Down _ _) e@Estado {modo = MenuInicial Sair} 
 reage (EventKey (Char 'w') Down _ _) e@Estado {modo = MenuInicial Sair} =
   return e {modo = MenuInicial Jogar}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Jogar} = do
-  pararMusicaAtual
   return e {modo = EmJogo}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuInicial Sair} =
   exitFailure
