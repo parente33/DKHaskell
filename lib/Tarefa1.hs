@@ -230,6 +230,7 @@ verificaColisaoMartelo dt jogo@(Jogo mapa inimigos colecionaveis jogador) =
 --                 novoJogador = jogador {vida = novaVida}
 --             in jogo {jogador = novoJogador, colecionaveis = colecionaveisRestantes}
 
+-- Verifica colisões com os kits médicos do jogo
 verificaColisaoKitMedico' :: Jogo -> Bool
 verificaColisaoKitMedico' jogo@(Jogo _ _ colecionaveis jogador) =
     any (\(colec, pos) -> colec == KitMedico && interHitboxes hitboxJogador (pos, pos)) colecionaveis
