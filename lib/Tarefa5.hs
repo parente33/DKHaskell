@@ -419,7 +419,7 @@ carregarImagens = do
   exitButton <- loadBMP $ "assets" </> "exit_button.bmp"
   returnButton2 <- loadBMP $ "assets" </> "retornar_button2.bmp"
   exitButton2 <- loadBMP $ "assets" </> "exit_button2.bmp"
-  medickit <- loadBMP $ "assests" </> "medic_kit.bmp"
+  medickit <- loadBMP $ "assets" </> "medic_kit.bmp"
   let imgs = [(Derrota,derrota),(Vitoria,vitoria),(FantasmaDireitaBMP,fantasmaDireita),(FantasmaBMP,fantasma),(MoedaBMP,moeda),(EmptyBMP,empty),
               (Princesa,princesa),(PlataformaBMP,plataforma),(Macaco,macaco),(Mariodireita,mariodireita),(Mario,mario),(Mariorunningdireita,mariorunningdireita),
               (Mariorunning,mariorunning),(Mariojumpingdireita,mariojumpingdireita),(Mariojumping,mariojumping),(Mariohammerdireita,mariohammerdireita),
