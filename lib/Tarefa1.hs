@@ -221,7 +221,7 @@ verificaColisaoMartelo dt jogo@(Jogo mapa inimigos colecionaveis jogador) =
 -- Verifica colisões com os kits médicos do jogo
 verificaColisaoKitMedico :: Jogo -> Jogo
 verificaColisaoKitMedico jogo@(Jogo mapa inimigos colecionaveis jogador) =
-    if (vida jogador >= 3)
+    if vida jogador >= 3
         then jogo
         else let hitboxJogador = calculaHitbox jogador
                  colecionaveisRestantes = filter (\(colec,pos) -> not (interHitboxes hitboxJogador (pos,pos))) colecionaveis
@@ -230,6 +230,11 @@ verificaColisaoKitMedico jogo@(Jogo mapa inimigos colecionaveis jogador) =
                  novoJogador = jogador {vida = novaVida}
              in jogo {jogador = novoJogador, colecionaveis = colecionaveisRestantes}
 
+colideComEstrela :: Jogo -> Bool
+colideComEstrela (Jogo _ _ colecionaveis jogador) =
+    any (\(colec, pos) -> colec == Estrela && interHitboxes hitboxJogador (pos, pos)) colecionaveis
+  where
+    hitboxJogador = calculaHitbox jogador
 
 -- Verifica colisões com a estrela do jogo, terminando-o
 colideComEstrela' :: Jogo -> Bool
@@ -237,10 +242,6 @@ colideComEstrela' jogo@(Jogo mapa@(Mapa(pos,dir) (x,y) matriz) inimigos colecion
  where
      calculaHitboxEstrela :: Posicao -> Hitbox
      calculaHitboxEstrela (x,y) = ((x-1/2,y+1/2),(x+1/2,y-1/2))
-
--- Para teste
-colideComEstrela :: Jogo -> Bool
-colideComEstrela jogo@(Jogo mapa inimigos colecionaveis jogador) = filter(\(colec,pos) -> colec == Estrela && interHitboxes hitboxJogador (pos,pos)) colecionaveis
 
 -- Verifica colisões com o macaco
 colideComDK :: Jogo -> Bool

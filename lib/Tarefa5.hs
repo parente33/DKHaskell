@@ -34,7 +34,7 @@ desenha e@Estado {modo = EmJogo, imagens = imgs, jogo = jogo, acao = acaoAtual} 
     let imagemJogador = imagemMario imgs e t jogador
     return $ Pictures (getImagem GameBackgroundImage imgs : mapaImagem (colisaoComAlcapao jogo) imgs 1 
         ++ [atualizaEstadoJogador e] 
-        ++ posicaoEstrela imgs jogo 
+        -- ++ posicaoEstrela imgs jogo 
         ++ posicaoColecionaveis imgs jogo 
         ++ desenhaVidas imgs jogo 
         ++ desenhaPontuacao imgs e 
@@ -78,6 +78,7 @@ posicaoColecionaveis' imgs ((c,(x,y)):xs)
            | c == Moeda = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MoedaBMP imgs) : posicaoColecionaveis' imgs xs
            | c == Martelo = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MarteloBMP imgs) : posicaoColecionaveis' imgs xs
            | c == KitMedico = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem MedicKit imgs) : posicaoColecionaveis' imgs xs
+           | c == Estrela = Translate (realToFrac (14.84-x)*(-24)) (realToFrac (y-20)*(-24)) (getImagem EstrelaBMP imgs) : posicaoColecionaveis' imgs xs
            | otherwise = []
 
 imagemMario :: Imagens -> Estado -> Float -> Personagem -> Picture
@@ -275,7 +276,7 @@ reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Exit}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = EmJogo}
 -- para teste
-reage (EventKey (SpecialKey KeyEsc) Down _ _) e@Estado {modo = MenuPausa Retomar} =
+reage (EventKey (SpecialKey KeyEsc) Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = EmJogo}
 reage (EventKey (SpecialKey KeyEsc) Down _ _) e@Estado {modo = MenuPausa Exit} =
   return e {modo = EmJogo}

@@ -8,7 +8,7 @@ import Tarefa4 ()
 import Tarefa5
 import Graphics.Gloss.Interface.IO.Game ( playIO )
 import Graphics.Gloss
-import SDL.Mixer
+import SDL.Mixer as Mixer
 import System.Environment (getEnv)
 import System.FilePath ((</>))
 import Control.Exception (bracket)
@@ -23,8 +23,9 @@ startMusicForMode :: Modo -> IO ()
 startMusicForMode mode = do
     pararMusicaAtual
     let musicPath = modoToMusic mode
-    musicFilePath <- load musicPath
-    _ <- forkIO $ SDL.Mixer.play musicFilePath
+    musicFilePath <- Mixer.load musicPath
+    Mixer.setMusicVolume 64
+    _ <- forkIO $ Mixer.play musicFilePath
     threadDelay 1
 
 main :: IO ()
