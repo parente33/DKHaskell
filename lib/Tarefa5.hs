@@ -274,6 +274,11 @@ reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Exit}
   return reiniciarJogo $ e {modo = MenuInicial Jogar}
 reage (EventKey (SpecialKey KeyEnter) Down _ _) e@Estado {modo = MenuPausa Retornar} =
   return e {modo = EmJogo}
+-- para teste
+reage (EventKey (SpecialKey KeyEsc) Down _ _) e@Estado {modo = MenuPausa Retomar} =
+  return e {modo = EmJogo}
+reage (EventKey (SpecialKey KeyEsc) Down _ _) e@Estado {modo = MenuPausa Exit} =
+  return e {modo = EmJogo}
 reage _ e = return e
 
 pararMusicaAtual :: IO ()
@@ -293,6 +298,7 @@ atualizaEstado dt e =
   let jogoAtualizado = atualizaPosicaoMario dt (jogo e)
   in e {jogo = jogoAtualizado}
 
+-- Só para debugging
 atualizaEstadoJogador :: Estado -> Picture
 atualizaEstadoJogador estado = let  jogoAtualizado = atualizaEstado 2024 estado
                                     jogadorAtualizado = jogador (jogo jogoAtualizado)
